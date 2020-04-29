@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<title></title>
+	</head>
+	<body>
+		<canvas id="cvs" style="border: #000000 solid 1px;" width="1200px" height="600px">
+			抱歉，你的浏览器不支持canvas
+		</canvas>
+		<script>
+			init()
+
+			function init() {
+				let canvas = document.getElementById('cvs');
+				let ctx = canvas.getContext("2d");
+				draw(ctx);
+			}
+
+			function draw(ctx) {
+				requestAnimationFrame(function step() {
+					drawDial(ctx); //绘制表盘
+					drawAllHands(ctx); //绘制指针
+					requestAnimationFrame(step);
+				})
+			}
+
+			function drawDial(ctx) {
+				//开始画表盘
+				let pi = Math.PI;
+				ctx.clearRect(0, 0, 1200, 600);
+				ctx.fillRect(0, 0, 1200, 600);
+				ctx.save();
+
+				ctx.translate(600, 300); //原点定为镇中心
+				ctx.beginPath();
+				ctx.arc(0, 0, 300, 0, pi * 2);
+				ctx.stroke();
+
+				for (let i = 0; i < 60; i++) { //绘制刻度。
+					ctx.save();
+					ctx.rotate(-pi / 2 + i * pi / 30); //旋转坐标轴。坐标轴x的正方形从 向上开始算起
+					ctx.beginPath();
+					ctx.moveTo(280, 0);
+					ctx.lineTo(300, 0);
+					ctx.lineWidth = i % 5 ? 2 : 6;
+					ctx.strokeStyle = i % 5 ? "#ffffff" : "#ff0000";
+					ctx.stroke();
+					ctx.closePath();
+					ctx.restore();
+				}
+				ctx.restore();
+			}
+
+			function drawAllHands(ctx) {
+				//开始画指针
+				let time = new Date();
+				let s = time.getSeconds();
+				let m = time.getMinutes();
+				let h = time.getHours();
+
+				let pi = Math.PI;
+				let secondAngle = pi / 180 * 6 * s; //计算出来s针的弧度
+				let minuteAngle = pi / 180 * 6 * m + secondAngle / 60; //计算出来分针的弧度
+				let hourAngle = pi / 180 * 30 * h + minuteAngle / 12; //计算出来时针的弧度
+
+				drawHand(hourAngle, 140, 6, "white", ctx); //绘制时针
+				drawHand(minuteAngle, 230, 4, "white", ctx); //绘制分针
+				drawHand(secondAngle, 280, 2, "white", ctx); //绘制秒针
+			}
+
+			function drawHand(angle, len, width, color, ctx) {
+				ctx.save();
+				ctx.translate(600, 300); //把坐标轴的远点平移到原来的中心
+				ctx.rotate(-Math.PI / 2 + angle); //旋转坐标轴。 x轴就是针的角度
+				ctx.beginPath();
+				ctx.moveTo(-4, 0);
+				ctx.lineTo(len, 0); // 沿着x轴绘制针
+				ctx.lineWidth = width;
+				ctx.strokeStyle = color;
+				ctx.lineCap = "round";
+				ctx.stroke();
+				ctx.closePath();
+				ctx.restore();
+			}
+		</script>
+	</body>
+</html>
