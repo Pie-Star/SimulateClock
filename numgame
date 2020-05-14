@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<title></title>
+		<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+		<script src="https://pie-star.github.io/frame/jQuery/jquery-3.2.1.min.js"></script>
+		<script>
+			$(() => {
+				$("#gameover>div>h1").on("click",()=>{
+					location.reload();
+				})
+				var i =0
+				$("#start>h2").on("click", () => {
+					$("#start").hide()
+					$("#window").show()
+					num = createnum()
+					console.log(num)
+				})
+				$("button").on("click",()=>{
+					if(!checkinginput())return;
+					if(i>=10){
+						$("#gameover>div>p").html("呆瓜你输了<br>正确数字是"+num+"<br>你还是回家种田去吧")
+						$("#gameover").css('display', 'flex')
+					}
+					let extarnum =$("#extarnumval").val()
+					var result=checkingnum(num,extarnum)
+					$("#warn").text("第"+(i+1)+"次猜测，您"+result)
+					$("#history").find('li').eq(i).html("第"+(i+1)+"次<br>你猜"+extarnum+"<br>"+result)
+					if(result=='猜对了'){
+						$("#gameover>div>p").text('恭喜你，你赢了')
+						$("#gameover").css('display', 'flex')
+					}
+					i++
+				})
+				
+				$("#extarnumval").blur(checkinginput)
+				function createnum() {
+					let num = Math.round(Math.random() * 100);
+					return num;
+				}
+				function checkingnum(num,extarnum){
+					let big ='猜大了'
+					let small ='猜小了'
+					let right ='猜对了'
+					if(num<extarnum){
+						return big
+					}else if(num>extarnum){
+						return small
+					}else{
+						return right
+					}
+				}
+				function checkinginput(){
+					let zz=/^([1-9]\d|\d)$/
+					let extarnum =$("#extarnumval").val()
+					if(zz.test(extarnum)){
+						$("#warn").text("")
+						return true
+					}else{
+						$("#warn").text("请输入0~99的正整数")
+						return false
+					}
+				}
+			})
+		</script>
+		<style>
+			* {
+				padding: 0px;
+				margin: 0px;
+				user-select: none;
+			}
+
+			html,
+			body {
+				width: 100%;
+				height: 100%;
+			}
+
+			#box {
+				background-color: lightblue;
+				margin-left: 10%;
+				margin-right: 10%;
+				height: 100%;
+				width: 80%;
+			}
+
+			#box>h1 {
+				padding-top: 5%;
+				text-align: center;
+				color: white;
+			}
+
+			#rule {
+				padding: 5%;
+			}
+
+			#map {
+				padding: 5%;
+				height: 40%;
+			}
+
+			#start {
+				margin: auto;
+				height: 100%;
+				width: 20%;
+				display: flex;
+				align-items: center;
+			}
+
+			#start>h2 {
+				margin: auto;
+				cursor: pointer;
+			}
+
+			#window {
+				display: none;
+				width: 100%;
+				height: 100%;
+			}
+			#history{
+				list-style: none;
+				width: 100%;
+				height: 40%;
+			}
+			#history>li{
+				width: 10%;
+				height: 100%;
+				float: left;
+			}
+			#window>p{
+				padding-top: 5%;
+				width: 100%;
+				height: 20%;
+				text-align: center;
+			}
+			#window>div{
+				padding-top: 2%;
+				width: 100%;
+				height: 10%;
+				text-align: center;
+			}
+			#warn{
+				color: red;
+			}
+			#gameover{
+				width: 100%;
+				height: 100%;
+				position: absolute;
+				background-color: rgba(0,0,0,0.8);
+				align-items: center;
+				display: none;
+			}
+			#gameover>div{
+				width: 20%;
+				margin: auto;
+			}
+			#gameover>div>p{
+				color: #FFFF00;
+				font-size: 30px;
+				text-align: center;
+				margin-bottom: 20% ;
+			}
+			#gameover>div>h1{
+				text-align: center;
+				color: #FFFFFF;
+				cursor: pointer;
+			}
+		</style>
+	</head>
+	<body>
+		<div id="gameover">
+			<div>
+				<p></p>
+				<h1>再玩一次</h1>
+			</div>
+		</div>
+		<div id="box">
+			<h1>猜数字游戏</h1>
+			<div id="rule">
+				<h3>游戏规则:</h3>
+				<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;点击开始按钮，系统会自动生成一个0~99的随机自然整数,
+					每一次你的猜测系统会给您提示,
+					猜大了或者猜小了,
+					直到您猜中该自然数则游戏胜利，
+					您有十次机会猜出这个数字,
+					十次机会内未猜出该自然整数则判定游戏失败。
+				</p>
+			</div>
+			<div id="map">
+				<div id="start">
+					<h2>开始游戏</h2>
+				</div>
+				<div id="window">
+					<ul id="history">
+						<li></li>
+						<li></li>
+						<li></li>
+						<li></li>
+						<li></li>
+						<li></li>
+						<li></li>
+						<li></li>
+						<li></li>
+						<li></li>
+					</ul>
+					<p>请输入你猜测的数字:<input placeholder="请输您猜测的整数" type="text" id="extarnumval" />
+						<br><span id="warn"></span>
+					</p>
+					<div><button>提交验证</button></div>
+				</div>
+			</div>
+		</div>
+	</body>
+</html>
